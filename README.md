@@ -7,8 +7,8 @@ Usage:
 
     eyeballtrace -c <country>  <target>
 
-<country> is an ISO 2 letter country code.
-<target> can be a hostname or IPv4 address.
+ * _country_ is an ISO 2 letter country code.
+ * _target_ can be a hostname or IPv4 address.
  
 
 Installation:
