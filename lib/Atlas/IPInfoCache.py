@@ -6,6 +6,8 @@ import sys
 import dns.resolver
 import traceback
 import ssl
+import requests
+requests.packages.urllib3.disable_warnings()
 import time
 
 #if hasattr(socket, 'setdefaulttimeout'):
@@ -50,9 +52,12 @@ class IPInfoCache():
       if not ip in self.ips:
          self.ips[ip] = {}
       try:
-         gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-         locinfo = urllib2.urlopen( "https://marmot.ripe.net/openipmap/ipmeta.json?ip=%s" % ( ip ), context=gcontext )
-         locjson = json.load( locinfo )
+         # don't verify. HTTPS only needed for authenticated sessions (this is not that)
+         r = requests.get("https://marmot.ripe.net/openipmap/ipmeta.json?ip=%s" % ( ip ), verify=False )
+         #gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+         #locinfo = urllib2.urlopen( "https://marmot.ripe.net/openipmap/ipmeta.json?ip=%s" % ( ip ), context=gcontext )
+         #locjson = json.load( locinfo )
+         locjson = r.json()
          if len( locjson['crowdsourced'] ) > 0:
             loc = locjson['crowdsourced'][0]['canonical_georesult']
             lat = locjson['crowdsourced'][0]['lat']
