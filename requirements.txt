@@ -1,6 +1,6 @@
-socketIO-client>=0.6.1
-dnspython>=1.11.1
-Jinja2>=2.7.3
-ripe.atlas.sagan>=0.1.15
-py-radix>=0.7.0
-arrow>=0.4.2
+socketIO-client==0.6.1
+dnspython==1.11.1
+Jinja2==2.7.3
+ripe.atlas.sagan==0.1.15
+py-radix==0.7.0
+arrow==0.4.2
