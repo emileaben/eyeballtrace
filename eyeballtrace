@@ -8,10 +8,10 @@ import os
 import time
 import socket
 import re
-sys.path.append('/Users/emile/workspace/atlas/lib/Atlas')
-import MeasurementPrint
-import ProbeInfo
-import Measure
+sys.path.insert(0, "%s/lib" % ( os.path.dirname(os.path.realpath(__file__) ) ) )
+from Atlas import MeasurementPrint
+from Atlas import ProbeInfo
+from Atlas import Measure
 from random import shuffle
 from socketIO_client import SocketIO
 
@@ -94,7 +94,7 @@ def doit( args ):
       head_end_probes = len( head_end['probes'] ) 
       if head_end_probes == 0:
          print "## AS%s/%s - %s (%.1f%% of market in %s)" % ( head_end['as'], head_end['autnum'], head_end['as-descr'], head_end['percent'], args.country )
-         print "NO RIPE Atlas coverage!!"
+         print "NO RIPE Atlas coverage!! If you are in a position to put a probe here: https://atlas.ripe.net/get-involved/become-a-host/""
          print
          done['econ'].pop(0)
       else:
