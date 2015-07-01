@@ -19,7 +19,7 @@ This tools depends on a couple of python modules that can be installed with pip 
 
 If you don't have pip, instructions are available at: https://pip.pypa.io/en/latest/installing.html
 
-For creating measurements with RIPE Atlas this tool needs an atlas api key in ~/.atlas/auth . Instructions on how to create such key are available at: XXX , if you have the key:
+For creating measurements with RIPE Atlas this tool needs an atlas api key in ~/.atlas/auth . Instructions on how to create such key are available at: @@XX , if you have the key:
 
     mkdir -p ~/.atlas/
     echo "<YOUR_KEY_HERE>" > ~/.atlas/auth
@@ -31,3 +31,4 @@ Of course you'll need RIPE Atlas credits to run this. Per ASN up to 3 probes are
 THIS TOOL IS A PROTOTYPE, YOUR MILEAGE MAY VARY
 
 Note: This has been tested on OSX 10.9.5 with Python 2.7.9
+It is known not to work on Python 2.7.3/Ubuntu yet.
