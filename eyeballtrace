@@ -68,8 +68,6 @@ def select_probes_based_on_market( args ):
       del( asndata['cc'] )
       del( asndata['samples'] )
    return all_probes, econdata, prb2as
-   ## now do the measurement
-   msm_id = Measure.oneofftrace(all_probes, args.dest, af=4, paris=1, description="eyeballtrace %s to %s" % ( args.country, args.dest ) )
 
 def _exit( msm_id ):
    print "\nopenipmap_url: https://marmot.ripe.net/openipmap/tracemap?msm_ids=%s&show_suggestions=0" % ( msm_id )
@@ -77,7 +75,7 @@ def _exit( msm_id ):
 
 def doit( args ):
    probe_selection,econdata,prb2as = select_probes_based_on_market( args )
-   msm_id = Measure.oneofftrace(probe_selection, args.dest, af=4, paris=1, description="econ-trace (%s) to %s" % ( args.country, args.dest ) )
+   msm_id = Measure.oneofftrace(probe_selection, args.dest, af=4, paris=1, description="eyeballtrace cc:%s dst:%s" % ( args.country, args.dest ) )
    #print econdata
    #print probe_selection
    #print "openipmap_url: https://marmot.ripe.net/openipmap/tracemap?msm_ids=%s&show_suggestions=0" % ( msm_id )
@@ -94,38 +92,47 @@ def doit( args ):
       head_end_probes = len( head_end['probes'] ) 
       if head_end_probes == 0:
          print "## AS%s/%s - %s (%.1f%% of market in %s)" % ( head_end['as'], head_end['autnum'], head_end['as-descr'], head_end['percent'], args.country )
-         print "NO RIPE Atlas coverage!! If you are in a position to put a probe here: https://atlas.ripe.net/get-involved/become-a-host/"
+         print "NO RIPE Atlas coverage!!" 
+         print "If you are in a position to put a probe in this network: https://atlas.ripe.net/get-involved/become-a-host/"
          print
          done['econ'].pop(0)
       else:
          break
    if len( done['econ'] ) == 0:
       _exit( msm_id )
-   def on_result(r):
-      try:
+   def toprint( r ):
+      prb_id = r['prb_id']
+      # now find the AS
+      asn = prb2as[ prb_id ]['as']
+      asname= "%s - %s" % ( prb2as[ prb_id ]['autnum'], prb2as[ prb_id ]['as-descr'] )
+      percent= prb2as[ prb_id ]['percent']
+      trace_txt = "## AS%s/%s (%.1f%% of market in %s)\n%s\n\n" % ( 
+         asn, asname, percent, args.country,
+         MeasurementPrint.trace2txt( r, header="#prb:%s dst:%s\n" % ( prb_id, r['dst_name'] ) )
+      )
+      return trace_txt
+      
+   def on_result( r ):
+      if 1: #try:
+         # below is logic to display the trace_txts in order of market share
          prb_id = r['prb_id']
          # now find the AS
-         asn= prb2as[ prb_id ]['as']
-         asname= "%s - %s" % ( prb2as[ prb_id ]['autnum'], prb2as[ prb_id ]['as-descr'] )
-         percent= prb2as[ prb_id ]['percent']
-         trace_txt = "## AS%s/%s (%.1f%% of market in %s)\n%s\n\n" % ( 
-            asn, asname, percent, args.country,
-            MeasurementPrint.trace2txt( r, header="#prb:%s dst:%s\n" % ( prb_id, r['dst_name'] ) )
-         )
-         # below is logic to display the trace_txts in order of market share
+         asn = prb2as[ prb_id ]['as']
          if asn == done['econ'][0]['as']:
-            print trace_txt
-            done['econ'].pop(0) # this AS is done now
+            print toprint( r )
+            done['econ'].pop(0) 
+            # this AS is done now, now see if we have raw tracetext cached for the next in line
             while len( done['econ'] ) > 0:
                head_end = done['econ'][0]
                head_end_probes = len( head_end['probes'] ) 
                if head_end_probes == 0:
                   print "## AS%s/%s - %s (%.1f%% of market in %s)" % ( head_end['as'], head_end['autnum'], head_end['as-descr'], head_end['percent'], args.country )
-                  print "NO RIPE Atlas coverage!!"
+                  print "NO RIPE Atlas coverage!!" 
+                  print "If you are in a position to put a probe in this network: https://atlas.ripe.net/get-involved/become-a-host/"
                   print
                   done['econ'].pop(0)
-               elif 'tracetxt' in head_end:
-                  print head_end['tracetxt']
+               elif 'rawtrace' in head_end:
+                  print toprint( head_end['rawtrace'] )
                   done['econ'].pop(0)
                else:
                   break
@@ -133,9 +140,8 @@ def doit( args ):
             ## cache it for later
             for econasn in done['econ']:
                if asn == econasn['as']:
-                  econasn['tracetxt'] = trace_txt
-                  
-      except:
+                  econasn['rawtrace'] = r
+      if 0: #except:
          print "something went wrong on this input: %s" % r
       if len( done['econ'] ) == 0:
          _exit( msm_id )
