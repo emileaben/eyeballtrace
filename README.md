@@ -36,4 +36,3 @@ For creating measurements with RIPE Atlas this tool needs an atlas api key in ~/
 THIS TOOL IS A PROTOTYPE, YOUR MILEAGE MAY VARY
 
 Note: This has been tested on OSX 10.9.5 with Python 2.7.9
-It is known not to work on Python 2.7.3/Ubuntu yet.
