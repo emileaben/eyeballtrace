@@ -104,7 +104,9 @@ def trace2txt( data, **kwargs ):
          try: asn = ipinfo['asn']
          except: pass
          loc = '' 
-         try: loc = ipinfo['location']
+         try: 
+            if ipinfo['location']:
+               loc = " |%s|" % ipinfo['location'] 
          except: pass
          #print "%s [AS%s] %s (%s) %s |%s| %s" % ( hop['hop'], asn, host, ip , sorted(ips[ip]), loc, type(loc) )
          if asn != '':
@@ -113,5 +115,5 @@ def trace2txt( data, **kwargs ):
             host = ip
          if loc == None:
             loc = ''
-         txt += "%s (%s) %s %s |%s|\n" % ( hop['hop'], asn, host , sorted(ips[ip]), loc.encode('ascii','replace') )
+         txt += "%s (%s) %s %s%s\n" % ( hop['hop'], asn, host , sorted(ips[ip]), loc.encode('ascii','replace') )
    return txt 
