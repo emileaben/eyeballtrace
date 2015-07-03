@@ -57,6 +57,9 @@ def select_probes_based_on_market( args ):
       econdata = json.load( conn )
    except:
       print "data URL unavailable, exiting (URL:%s)" % APNIC_ECON_URL
+   if len( econdata ) == 0:
+      print "data URL returned 0 ASNs for this economy (URL:%s)" % APNIC_ECON_URL
+      sys.exit(1)
    for asndata in econdata:
       probes = select_probes_for_asn( asndata['as'], args.country, af=4 )
       all_probes += probes
@@ -77,7 +80,6 @@ def doit( args ):
    probe_selection,econdata,prb2as = select_probes_based_on_market( args )
    msm_id = Measure.oneofftrace(probe_selection, args.dest, af=4, paris=1, description="eyeballtrace cc:%s dst:%s" % ( args.country, args.dest ) )
    #print econdata
-   #print probe_selection
    #print "openipmap_url: https://marmot.ripe.net/openipmap/tracemap?msm_ids=%s&show_suggestions=0" % ( msm_id )
    print "Please wait, while RIPE Atlas performs traceroutes to: %s\n\n" % ( args.dest )
    done = {
@@ -113,7 +115,7 @@ def doit( args ):
       return trace_txt
       
    def on_result( r ):
-      if 1: #try:
+      try:
          # below is logic to display the trace_txts in order of market share
          prb_id = r['prb_id']
          # now find the AS
@@ -141,7 +143,7 @@ def doit( args ):
             for econasn in done['econ']:
                if asn == econasn['as']:
                   econasn['rawtrace'] = r
-      if 0: #except:
+      except:
          print "something went wrong on this input: %s" % r
       if len( done['econ'] ) == 0:
          _exit( msm_id )
