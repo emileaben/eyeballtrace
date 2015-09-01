@@ -93,7 +93,7 @@ def doit( args ):
       head_end = done['econ'][0]
       head_end_probes = len( head_end['probes'] ) 
       if head_end_probes == 0:
-         print "## AS%s/%s - %s (%.1f%% of market in %s)" % ( head_end['as'], head_end['autnum'], head_end['as-descr'], head_end['percent'], args.country )
+         print "## AS%s/%s - %s (%.1f%% of browser users in %s)" % ( head_end['as'], head_end['autnum'], head_end['as-descr'], head_end['percent'], args.country )
          print "NO RIPE Atlas coverage!!" 
          print "If you are in a position to put a probe in this network: https://atlas.ripe.net/get-involved/become-a-host/"
          print
@@ -158,6 +158,7 @@ def doit( args ):
 if __name__ == "__main__":
    parser = argparse.ArgumentParser()
    parser.add_argument('-c','--country', help="select probes from this country-code (2letter ISO)")
+   #parser.add_argument('-o','--output', help="save output to file ( ebt.<country>.<destination>.txt )")
    #parser.add_argument('-f','--address-family', help="measure on IPv4 or IPv6") #TODO implement!
    parser.add_argument('dest', help="Destination")
    args = parser.parse_args()
