@@ -108,7 +108,7 @@ def doit( args ):
       asn = prb2as[ prb_id ]['as']
       asname= "%s - %s" % ( prb2as[ prb_id ]['autnum'], prb2as[ prb_id ]['as-descr'] )
       percent= prb2as[ prb_id ]['percent']
-      trace_txt = "## AS%s/%s (%.1f%% of market in %s)\n%s\n\n" % ( 
+      trace_txt = "## AS%s/%s (%.1f%% of browser users in %s)\n%s\n\n" % ( 
          asn, asname, percent, args.country,
          MeasurementPrint.trace2txt( r, header="#prb:%s dst:%s\n" % ( prb_id, r['dst_name'] ) )
       )
