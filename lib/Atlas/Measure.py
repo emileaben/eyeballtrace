@@ -16,7 +16,7 @@ auth.close()
 KEY.rstrip()
 ### END AUTH
 
-MSM_URL = "https://atlas.ripe.net/api/v1/measurement/?key=%s" % KEY
+MSM_URL = "https://atlas.ripe.net/api/v2/measurements/?key=%s" % KEY
 
 class JsonRequest(urllib2.Request):
     def __init__(self, url):
@@ -32,7 +32,7 @@ def measure_from_template( template_file, template_vars ):
    try:
       msm_conn = urllib2.urlopen(msm_req, json_data)
    except urllib2.HTTPError as e:
-        print >>sys.stderr, ("Fatal error when reading results: %s" % e.read())
+        print >>sys.stderr, ("Fatal error when reading results1: %s" % e.read())
         sys.exit(1)
    msm_meta = json.load(msm_conn)
    msm_id = msm_meta["measurements"][0]
@@ -43,7 +43,7 @@ def measure( msm_spec ):
    try:
       msm_conn = urllib2.urlopen(msm_req, json.dumps( msm_spec ) )
    except urllib2.HTTPError as e:
-      print >>sys.stderr, ("Fatal error when reading results: %s" % e.read())
+      print >>sys.stderr, ("Fatal error when reading results2: %s" % e.read())
       sys.exit(1)
    msm_meta = json.load(msm_conn)
    msm_id = msm_meta["measurements"][0]
@@ -90,7 +90,7 @@ def oneofftrace( probes_def, dst, **kwargs ):
    try:
       msm_conn = urllib2.urlopen(msm_req, json_data)
    except urllib2.HTTPError as e:
-        print >>sys.stderr, ("Fatal error when reading results: %s" % e.read())
+        print >>sys.stderr, ("Fatal error when reading results3: %s" % e.read())
         sys.exit(1)
    # Now, parse the answer
    msm_meta = json.load(msm_conn)

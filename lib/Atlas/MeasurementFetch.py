@@ -5,8 +5,8 @@ import json
 import sys
 
 API_HOST='https://atlas.ripe.net'
-API_URI='/api/v1/measurement'
-API_URI_LATEST='/api/v1/measurement-latest'
+API_URI='/api/v2/measurement'
+API_URI_LATEST='/api/v2/measurement-latest'
 
 def fetch(msm_id, **kwargs):
    default_args = {
@@ -33,14 +33,15 @@ def fetch(msm_id, **kwargs):
       data = json.loads( l )
       yield( data )
 
-def fetch_latest(msm_id, **kwargs):        
+def fetch_latest(msm_id, **kwargs):
    default_args = {
       'format': 'txt'
    }
    api_args = dict( default_args.items() + kwargs.items() )
    url = "%s/%s/%d/result/?%s" % (API_HOST,API_URI_LATEST,msm_id,urllib.urlencode( api_args ) )
+   print "fetch_latest"
+   print url
    conn = urllib2.urlopen( url )
    for l in conn:
       data = json.loads( l )
       yield( data )
-

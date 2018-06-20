@@ -35,7 +35,7 @@ def select_probes_for_asn( asn, cc, af=4, count=3):
    elif len( pinf ) < count:
       #print "low probecount for AS%s" % asn
       return pinf.keys()
-   else:   
+   else:
       return subselect_best_probes( pinf, count=count )
 
    #print "%s %s" % ( asn, len( pinf ) )
@@ -43,7 +43,7 @@ def select_probes_for_asn( asn, cc, af=4, count=3):
    #   print "%s %s" % ( count, pinf[p] )
 
 def select_probes_based_on_market( args ):
-   ## select 
+   ## select
    ### fetch data from APNIC for the specified economy
    all_probes = []
    prb2as={}
@@ -53,7 +53,7 @@ def select_probes_based_on_market( args ):
    APNIC_ECON_URL="http://data.labs.apnic.net/ipv6-measurement/Economies/%s/%s.asns.json?m=1" % ( args.country, args.country )
    try:
       req = urllib2.Request( APNIC_ECON_URL )
-      conn = urllib2.urlopen( req ) 
+      conn = urllib2.urlopen( req )
       econdata = json.load( conn )
    except:
       print "data URL unavailable, exiting (URL:%s)" % APNIC_ECON_URL
@@ -77,6 +77,7 @@ def _exit( msm_id ):
    sys.exit(0)
 
 def doit( args ):
+   print "Please wait, while finding RIPE Atlas probes\n" 
    probe_selection,econdata,prb2as = select_probes_based_on_market( args )
    msm_id = Measure.oneofftrace(probe_selection, args.dest, af=4, paris=1, description="eyeballtrace cc:%s dst:%s" % ( args.country, args.dest ) )
    #print econdata
@@ -91,10 +92,10 @@ def doit( args ):
    ### if head-end of econdata asns doesn't have probes, we should display that
    while len( done['econ'] ) > 0:
       head_end = done['econ'][0]
-      head_end_probes = len( head_end['probes'] ) 
+      head_end_probes = len( head_end['probes'] )
       if head_end_probes == 0:
          print "## AS%s/%s - %s (%.1f%% of browser users in %s)" % ( head_end['as'], head_end['autnum'], head_end['as-descr'], head_end['percent'], args.country )
-         print "NO RIPE Atlas coverage!!" 
+         print "NO RIPE Atlas coverage!!"
          print "If you are in a position to put a probe in this network: https://atlas.ripe.net/get-involved/become-a-host/"
          print
          done['econ'].pop(0)
@@ -108,12 +109,12 @@ def doit( args ):
       asn = prb2as[ prb_id ]['as']
       asname= "%s - %s" % ( prb2as[ prb_id ]['autnum'], prb2as[ prb_id ]['as-descr'] )
       percent= prb2as[ prb_id ]['percent']
-      trace_txt = "## AS%s/%s (%.1f%% of browser users in %s)\n%s\n\n" % ( 
+      trace_txt = "## AS%s/%s (%.1f%% of browser users in %s)\n%s\n\n" % (
          asn, asname, percent, args.country,
          MeasurementPrint.trace2txt( r, header="#prb:%s dst:%s\n" % ( prb_id, r['dst_name'] ) )
       )
       return trace_txt
-      
+
    def on_result( r ):
       try:
          # below is logic to display the trace_txts in order of market share
@@ -122,14 +123,14 @@ def doit( args ):
          asn = prb2as[ prb_id ]['as']
          if asn == done['econ'][0]['as']:
             print toprint( r )
-            done['econ'].pop(0) 
+            done['econ'].pop(0)
             # this AS is done now, now see if we have raw tracetext cached for the next in line
             while len( done['econ'] ) > 0:
                head_end = done['econ'][0]
-               head_end_probes = len( head_end['probes'] ) 
+               head_end_probes = len( head_end['probes'] )
                if head_end_probes == 0:
                   print "## AS%s/%s - %s (%.1f%% of market in %s)" % ( head_end['as'], head_end['autnum'], head_end['as-descr'], head_end['percent'], args.country )
-                  print "NO RIPE Atlas coverage!!" 
+                  print "NO RIPE Atlas coverage!!"
                   print "If you are in a position to put a probe in this network: https://atlas.ripe.net/get-involved/become-a-host/"
                   print
                   done['econ'].pop(0)

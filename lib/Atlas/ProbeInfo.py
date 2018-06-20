@@ -4,7 +4,7 @@ import urllib
 import json
 
 PROBE_API_HOST='https://atlas.ripe.net'
-PROBE_API_URL='%s/api/v1/probe/' % ( PROBE_API_HOST )
+PROBE_API_URL='%s/api/v2/probes/' % ( PROBE_API_HOST )
 
 PROBE_API_URL_ARCHIVE='%s/api/v1/probe-archive/' % ( PROBE_API_HOST )
 
@@ -25,7 +25,7 @@ def query_archive(**kwargs):
    except urllib2.URLError, e:
       raise Exception("There was an error: %r (url:%s)" % (e,url))
    result = json.load( conn )
-   for obj in result['objects']:
+   for obj in result['results']:
       objects[ obj['id'] ] = obj
    return objects
 
@@ -34,23 +34,23 @@ def query(**kwargs):
       return query_archive(**kwargs)
    if not 'limit' in kwargs:
       kwargs['limit'] = 200
-   objects = {} 
+   objects = {}
    url = "%s?%s" % (PROBE_API_URL, urllib.urlencode( kwargs ) )
    try:
       conn = urllib2.urlopen( url )
    except:
       raise ValueError("URL fetch error on: %s" % (url) )
    result = json.load( conn )
-   objects = result['objects'] 
-   while result['meta']['next'] != None:
-      continurl = "%s/%s" % ( PROBE_API_HOST, result['meta']['next'] )
-      #print continurl
-      try:
-         contin = urllib2.urlopen( continurl )
-      except:
-         raise ValueError("URL fetch error on: %s" % (continurl) )
-      result = json.load( contin )
-      objects.extend( result['objects'] )
+   objects = result['results']
+#   while result['meta']['next'] != None:
+#      continurl = "%s/%s" % ( PROBE_API_HOST, result['meta']['next'] )
+#      #print continurl
+#      try:
+#         contin = urllib2.urlopen( continurl )
+#      except:
+#         raise ValueError("URL fetch error on: %s" % (continurl) )
+#      result = json.load( contin )
+#      objects.extend( result['results'] )
    keyed_objects = {}
    for obj in objects:
       keyed_objects[ obj['id'] ] = obj

@@ -22,7 +22,7 @@ class IPInfoCache():
    def getIPInfo(self,ip):
       if ip in self.ips:
          return self.ips[ip]
-      else: 
+      else:
          return {}
    def findIPInfo(self, ip):
       ''' tries to find info for this IP in cache, if not it will collect it from external sources '''
@@ -46,7 +46,7 @@ class IPInfoCache():
    def findLocation(self, ip ):
       ''' find location info, either from cache, or external data source (openipmap) '''
       t1 = time.time()
-      loc,lat,lon = self.getLocation( ip ) 
+      loc,lat,lon = self.getLocation( ip )
       if not loc is None: ## loc is already set
          return loc,lat,lon
       if not ip in self.ips:
@@ -93,7 +93,7 @@ class IPInfoCache():
             asn = asnjson['data']['asns'][0]['asn']
          else:
             asn = ''
-      except: 
+      except:
          sys.stderr.write( "eeps: problem in ASN for ip: %s\n" %  (ip ) )
          return None ## todo proper error handling
       self.ips[ip]['asn'] = asn
@@ -121,7 +121,7 @@ class IPInfoCache():
          else:
             host = ''
       except dns.resolver.NXDOMAIN: host = ''
-      except Exception as e: 
+      except Exception as e:
          ## timeout?
          #print >>sys.stderr, " %s " % ( e )
          return None
